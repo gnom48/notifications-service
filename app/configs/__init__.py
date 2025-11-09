@@ -1,6 +1,6 @@
-from rabbitmq_config import RabbitMQConfig
-from tg_config import TgConfig
-from server_config import ServerConfig
+from .rabbitmq_config import RabbitMQConfig
+from .tg_config import TgConfig
+from .server_config import ServerConfig
 
 TG_CONFIG = TgConfig()
 TG_CONFIG.init()

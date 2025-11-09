@@ -1,9 +1,9 @@
-from enum import Enum
+from abc import ABC, abstractmethod
+
+from app.models.pydantic.msg import Msg
 
 
-class SenderType(str, Enum):
-    TG = "TG"
-
-
-class BaseSender:
-    ...
+class BaseSender(ABC):
+    @abstractmethod
+    def send_single(self, msg: Msg, delay: int = 0):
+        pass

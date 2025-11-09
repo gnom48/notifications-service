@@ -1,8 +1,8 @@
-import uvicorn
-
-from app.rest.server import app
-from app.configs import SERVER_CONFIG
-
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0",
-                port=SERVER_CONFIG.SERVER_PORT, reload=True)
+    import uvicorn
+
+    from .rest.server import app as asgi_application
+    from .configs import SERVER_CONFIG
+
+    uvicorn.run(asgi_application, host="0.0.0.0",
+                port=int(SERVER_CONFIG.SERVER_PORT))

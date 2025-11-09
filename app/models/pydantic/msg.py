@@ -1,6 +1,9 @@
 from pydantic import BaseModel
+from enum import Enum
 
-from app.sender import SenderType
+
+class SenderType(str, Enum):
+    TG = "TG"
 
 
 class Msg(BaseModel):

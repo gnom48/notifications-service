@@ -5,7 +5,7 @@ import logging
 from app.configs.rabbitmq_config import RabbitMQConfig
 from app.configs import RABBITMQ_CONFIG
 from app.models.pydantic.msg import Msg
-from app.sender import *
+from app.sender import create_sender
 
 
 async def listen_rabbitmq(config: RabbitMQConfig = RABBITMQ_CONFIG):

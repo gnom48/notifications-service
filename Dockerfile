@@ -9,6 +9,8 @@ RUN pip wheel --wheel-dir /wheels -r requirements.txt
 
 FROM python:3.12-slim
 
+RUN apt-get update && apt-get install -y curl
+
 ENV PYTHONDONTWRITEBYTECODE=1 
 ENV PYTHONUNBUFFERED=1
 
@@ -22,7 +24,4 @@ RUN pip install --no-index --find-links=/wheels -r requirements.txt
 
 COPY ./ ./
 
-ENTRYPOINT ["sh", "-c"]
-# CMD ["uvicorn app.main:app --host 0.0.0.0 --port 30010 --reload"]
-CMD ["python", "-u", "main.py"]
-
+CMD ["python", "-m", "app.main"]
