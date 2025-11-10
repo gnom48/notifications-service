@@ -5,7 +5,7 @@ import logging
 from app.configs.rabbitmq_config import RabbitMQConfig
 from app.configs import RABBITMQ_CONFIG
 from app.models.pydantic.msg import Msg
-from app.sender import create_sender
+from app.sender import create_sender, BaseSender
 
 
 async def listen_rabbitmq(config: RabbitMQConfig = RABBITMQ_CONFIG):
@@ -37,14 +37,11 @@ async def on_message_post(incoming_message: IncomingMessage):
         logging.debug(
             f"New msg delivered: {incoming_message.body.decode(__encoding_to)}")
         try:
-            msg_data = Msg.model_validate_json(
+            msg_data: Msg = Msg.model_validate_json(
                 incoming_message.body.decode(__encoding_to))
 
-            msg_sender = create_sender(msg_data.sender)
-            # ...
-            # TODO: отправка
-            # ...
-            success = True
+            msg_sender: BaseSender = create_sender(msg_data.sender)
+            success = await msg_sender.send_single(msg=msg_data)
 
             if not success:
                 # WARNING: если будет ошибка, то при requeue=True получится бесконечный цикл

@@ -28,13 +28,15 @@ class TgSender(BaseSender):
         super().__init__()
         self.__config = config
 
-    async def send_single(self, msg: Msg, delay: int = 0):
+    async def send_single(self, msg: Msg, delay: int = 0) -> bool:
         try:
             await asyncio.sleep(delay)
             await tg_bot.send_message(
                 chat_id=self.__config.TG_DEFAULT_CHAT_ID,
                 text=TgSender.build_msg(msg))
+            return True
         except Exception as e:
+            return False
             logging.error(
                 f"Unable to send msg for user _ in Telegram: ", exc_info=e)
 
