@@ -1,7 +1,6 @@
 from .sender import BaseSender
-from .tg_sender import TgSender
+from .tg import TgSender, start_tg_bot
 from app.models.pydantic.msg import SenderType
-from .tg_sender import tg_dispatcher, tg_bot
 
 
 def create_sender(sender_type: SenderType) -> BaseSender:

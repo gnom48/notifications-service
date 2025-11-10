@@ -3,26 +3,24 @@ from contextlib import asynccontextmanager
 from datetime import datetime
 import logging
 from typing import AsyncGenerator
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, status
 
 from app.rabbitmq.consumer import listen_rabbitmq
 from app.rest.routers import router_notification
 from .middleware import auth_middleware, error_middleware
-from app.sender import tg_dispatcher, tg_bot
+from app.sender import start_tg_bot
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     logging.basicConfig(level=logging.DEBUG,
-                        format='%(asctime)s %(levelname)-8s %(message)s')  # ,
-    # datefmt='%Y-%m-%d %H:%M:%S')
+                        format='%(asctime)s %(levelname)-8s %(message)s',
+                        datefmt='%Y-%m-%d %H:%M:%S')
     logging.debug("Logger configured")
 
     logging.debug("Server started")
 
-    tg_listen_task = asyncio.create_task(
-        tg_dispatcher.start_polling(dispatcher=tg_dispatcher)
-    )
+    tg_listen_task = asyncio.create_task(start_tg_bot())
     logging.debug("Telegram bot started")
 
     rabbitmq_listen_task = asyncio.create_task(listen_rabbitmq())

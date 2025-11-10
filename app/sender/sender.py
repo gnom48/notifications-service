@@ -5,5 +5,5 @@ from app.models.pydantic.msg import Msg
 
 class BaseSender(ABC):
     @abstractmethod
-    def send_single(self, msg: Msg, delay: int = 0):
+    async def send_single(self, msg: Msg, delay: int = 0):
         pass
