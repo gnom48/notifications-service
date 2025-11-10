@@ -3,7 +3,7 @@ from aiogram.types import Message
 from aiogram.filters.command import CommandStart, Command
 
 
-router_notifications = Router("notifications")
+router_notifications = Router(name="notifications")
 
 
 @router_notifications.message(CommandStart())

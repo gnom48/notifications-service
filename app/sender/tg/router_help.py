@@ -3,7 +3,8 @@ from aiogram.types import Message
 from aiogram.filters.command import Command
 
 
-router_help = Router("help")  # TODO: router -> в отдельного бота техподдержки
+# TODO: router -> в отдельного бота техподдержки
+router_help = Router(name="help")
 
 
 @router_help.message(Command("error"))
