@@ -1,4 +1,4 @@
-from aio_pika import connect_robust, Message, Queue, Channel, IncomingMessage
+from aio_pika import connect_robust, Queue, IncomingMessage
 import asyncio
 import logging
 
@@ -9,6 +9,8 @@ from app.sender import create_sender, BaseSender
 
 
 async def listen_rabbitmq(config: RabbitMQConfig = RABBITMQ_CONFIG):
+    logging.debug(config.__str__())
+
     global channel
 
     connection = await connect_robust(
@@ -21,8 +23,7 @@ async def listen_rabbitmq(config: RabbitMQConfig = RABBITMQ_CONFIG):
     async with connection:
         channel = await connection.channel()
 
-        queue: Queue
-        queue = await channel.declare_queue(config.RABBITMQ_QUEUE_NAME, durable=True)
+        queue: Queue = await channel.declare_queue(config.RABBITMQ_QUEUE_NAME, durable=True)
 
         await queue.consume(on_message_post)
         logging.debug("Waiting for messages...")
@@ -47,6 +48,7 @@ async def on_message_post(incoming_message: IncomingMessage):
                 # WARNING: если будет ошибка, то при requeue=True получится бесконечный цикл
                 # -> пересылать в очередь для ошибок
                 await incoming_message.reject(requeue=True)
+                raise Exception()
 
             await incoming_message.ack()
             logging.debug(

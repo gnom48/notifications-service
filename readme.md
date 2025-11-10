@@ -22,7 +22,7 @@
 ### Запуск:
 Сначала необходимо сбилдить образ:
 ```sh
-docker build -t notifications-service .
+docker build -t notifications-service:latest .
 ```
 Для запуска можно использовать общий манифест docker-compose.yaml, потому что необходимо передать переменные окружения:
 ```yaml
