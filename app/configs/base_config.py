@@ -53,7 +53,6 @@ from typing import Any
 
 class BaseConfig:
     def __init__(self):
-        self._topic_name = self.__class__.__name__.replace("Config")
         self._topic_name = self.__class__.__name__.replace("Config", "")
 
     def init(self):
