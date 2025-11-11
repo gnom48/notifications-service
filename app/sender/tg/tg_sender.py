@@ -26,6 +26,7 @@ async def start_tg_bot():
 class TgSender(BaseSender):
     def __init__(self, config: TgConfig = TG_CONFIG):
         super().__init__()
+        logging.debug(config.__str__())
         self.__config = config
 
     async def send_single(self, msg: Msg, delay: int = 0) -> bool:

@@ -5,7 +5,7 @@ import logging
 from typing import AsyncGenerator
 from fastapi import FastAPI, status
 
-from app.rabbitmq.consumer import listen_rabbitmq
+from app.rabbitmq.consumer import RabbitMQConsumer
 from app.rest.routers import router_notification
 from .middleware import auth_middleware, error_middleware
 from app.sender import start_tg_bot
@@ -18,13 +18,15 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
                         datefmt='%Y-%m-%d %H:%M:%S')
     logging.debug("Logger configured")
 
-    logging.debug("Server started")
-
+    logging.debug("Telegram bot starting")
     tg_listen_task = asyncio.create_task(start_tg_bot())
-    logging.debug("Telegram bot started")
 
-    rabbitmq_listen_task = asyncio.create_task(listen_rabbitmq())
-    logging.debug("RabbitMQ consumer started")
+    logging.debug("RabbitMQ consumer starting")
+    rabbitmq_consumer = RabbitMQConsumer()
+    await rabbitmq_consumer.connect()
+    rabbitmq_listen_task = asyncio.create_task(rabbitmq_consumer.listen())
+
+    logging.debug("Server starting")
 
     try:
         yield
