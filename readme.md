@@ -37,10 +37,10 @@ services:
       SERVER_PORT: ${NOTIFICATIONS_PORT}
       TG_BOT_TOKEN: ${TG_BOT_TOKEN}
       TG_DEFAULT_CHAT_ID: ${TG_DEFAULT_CHAT_ID}
+      RABBITMQ_HOST: ${RABBITMQ_HOST}
       RABBITMQ_PORT: ${RABBITMQ_PORT}
-      RABBITMQ_ADMINPANEL_PORT: ${RABBITMQ_ADMINPANEL_PORT}
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+      RABBITMQ_USER: ${RABBITMQ_USER}
+      RABBITMQ_PASSWORD: ${RABBITMQ_PASSWORD}
       RABBITMQ_QUEUE_NAME: ${RABBITMQ_QUEUE_NAME}
     restart: unless-stopped
     healthcheck:
@@ -48,10 +48,18 @@ services:
       interval: 180s
       timeout: 10s
       retries: 3
-      start_period: 20s
+      start_period: 10s
 ...
 ```
 ### Планы:
-см. notes.md
+Steps:
+1. [готово] Просто сервис который слушает RabbitMQ/Kafka для отправки разовых сообщений. На данном этапе реализация только ТГ
+2. [готово] Локализация
+3. Реализация триггеров хранимых в бд, планировщика; Добавить Fast API
+4. Реализации других мессенджеров
+5. Реализация Push через Rustore SDK (работает при уставновленных VK сервисах)
+6. [готово] Функционал техподдержки в ботов (хотя бы на уровне "сообщить об ошибке")
+7. Соединение через чат бота специалиста техподдержки с пользователем
 
+### Features:
 Также реализован REST API - FastAPI для будущей более детальной настройки уведомлений, рассылок, триггеров.

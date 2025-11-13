@@ -9,6 +9,7 @@ from app.rabbitmq.consumer import RabbitMQConsumer
 from app.rest.routers import router_notification
 from .middleware import auth_middleware, error_middleware
 from app.sender import start_tg_bot
+from app.db import new_session, configure_db
 
 
 @asynccontextmanager
@@ -17,6 +18,9 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
                         format='%(asctime)s %(levelname)-8s %(message)s',
                         datefmt='%Y-%m-%d %H:%M:%S')
     logging.debug("Logger configured")
+
+    await configure_db(create_tables=False, drop_tables=False)
+    logging.debug("Db postgres connected")
 
     logging.debug("Telegram bot starting")
     tg_listen_task = asyncio.create_task(start_tg_bot())
