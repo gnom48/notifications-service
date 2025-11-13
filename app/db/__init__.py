@@ -1,2 +1,2 @@
 from .orm import new_session, configure_db
-from .models import *
+from ..models.sqlalchemy.models import *

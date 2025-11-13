@@ -1,12 +1,10 @@
 from pydantic import BaseModel
 from enum import Enum
 
-
-class SenderType(str, Enum):
-    TG = "TG"
+from .models import NotificationType
 
 
 class Msg(BaseModel):
-    sender: SenderType
+    sender: NotificationType
     title: str
     body: str

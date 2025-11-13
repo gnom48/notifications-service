@@ -1,7 +1,7 @@
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncConnection
 from sqlalchemy import text
 from sqlalchemy.engine.url import URL
-from .models import *
+from app.models.sqlalchemy.models import *
 from app.configs import DB_CONFIG, DbConfig
 
 
