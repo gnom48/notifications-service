@@ -1,36 +1,33 @@
 import asyncio
 from contextlib import asynccontextmanager
-from datetime import datetime
 import logging
 from typing import AsyncGenerator
-from fastapi import FastAPI, status
+from fastapi import FastAPI
 
-from app.rabbitmq.consumer import RabbitMQConsumer
-from app.rest.routers import router_notification
+from app.rest.routers import router_notification, router_healthcheck
 from .middleware import auth_middleware, error_middleware
-from app.sender import start_tg_bot
-from app.db import new_session, configure_db
+from app.di import di_container
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+async def lifespan(
+    app: FastAPI,
+) -> AsyncGenerator[None, None]:
     logging.basicConfig(level=logging.DEBUG,
                         format='%(asctime)s %(levelname)-8s %(message)s',
                         datefmt='%Y-%m-%d %H:%M:%S')
     logging.debug("Logger configured")
 
-    await configure_db(create_tables=False, drop_tables=False)
+    await di_container.db_configurer()
     logging.debug("Db postgres connected")
 
     logging.debug("Telegram bot starting")
-    tg_listen_task = asyncio.create_task(start_tg_bot())
+    tg_listen_task = asyncio.create_task(di_container.tg_bot_starter())
 
     logging.debug("RabbitMQ consumer starting")
-    rabbitmq_consumer = RabbitMQConsumer()
+    rabbitmq_consumer = di_container.rabbitmq_consumer()
     await rabbitmq_consumer.connect()
     rabbitmq_listen_task = asyncio.create_task(rabbitmq_consumer.listen())
-
-    logging.debug("Server starting")
 
     try:
         yield
@@ -46,15 +43,13 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
         logging.debug("Server stopped")
 
 
-app = FastAPI(lifespan=lifespan)
+asgi_application = FastAPI(
+    lifespan=lifespan,
+    description="Notifications service"
+)
 
-app.middleware("http")(error_middleware)
-app.middleware("http")(auth_middleware)
+asgi_application.middleware("http")(error_middleware)
+asgi_application.middleware("http")(auth_middleware)
 
-
-@app.get("/health_check", status_code=status.HTTP_200_OK)
-async def server_config_get():
-    return {"datetime": datetime.now()}
-
-
-app.include_router(router_notification)
+asgi_application.include_router(router_healthcheck)
+asgi_application.include_router(router_notification)

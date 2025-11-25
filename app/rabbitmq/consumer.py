@@ -3,21 +3,19 @@ from aio_pika.abc import AbstractRobustConnection
 import asyncio
 import logging
 
-from app.configs.rabbitmq_config import RabbitMQConfig
-from app.configs import RABBITMQ_CONFIG
+from app.configs import RabbitMQConfig
 from app.models.pydantic.msg import Msg
 from app.sender import create_sender, BaseSender
 
 
 class RabbitMQConsumer:
-    def __init__(self, config: RabbitMQConfig = RABBITMQ_CONFIG):
+    def __init__(self, config: RabbitMQConfig):
         self.connection: AbstractRobustConnection = None
         self.__encoding_to = "utf-8"
         self.RABBITMQ_NACK_QUEUE_NAME = "nacks"
         self.config: RabbitMQConfig = config
 
-    async def connect(self, config: RabbitMQConfig = RABBITMQ_CONFIG) -> bool:
-        self.config = config
+    async def connect(self) -> bool:
         try:
             self.connection = await connect_robust(
                 host=self.config.RABBITMQ_HOST,

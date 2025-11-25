@@ -1,5 +1,4 @@
-from pydantic import BaseModel, Field, validator
-from datetime import datetime
+from pydantic import BaseModel, Field
 from typing import Optional, List
 from enum import Enum
 
@@ -9,13 +8,24 @@ class NotificationType(Enum):
     PUSH = "PUSH"
 
 
+class Notification(BaseModel):
+    id: int = Field(default=0)
+    user_id: str = Field(max_length=255)
+    title: str = Field(min_length=1, max_length=255)
+    body: str = Field(min_length=1, max_length=1000)
+    type_id: NotificationType
+    when_planned: int = Field(
+        description="Время планирования уведомления в unix")
+    delivered: bool = False
+
+
 class NotificationCreate(BaseModel):
     user_id: str = Field(max_length=255)
     title: str = Field(min_length=1, max_length=255)
     body: str = Field(min_length=1, max_length=1000)
     type_id: NotificationType
     when_planned: int = Field(
-        description="Время планирования уведомления в unix-time")
+        description="Время планирования уведомления в unix")
     delivered: bool = False
 
 
@@ -24,8 +34,14 @@ class NotificationUpdate(BaseModel):
     body: Optional[str] = Field(None, min_length=1, max_length=1000)
     type_id: Optional[NotificationType]
     when_planned: Optional[int] = Field(
-        None, description="Время планирования уведомления в unix-time")
+        None, description="Время планирования уведомления в unix")
     delivered: Optional[bool]
+
+
+class Template(BaseModel):
+    id: int = Field(default=0)
+    title_template: str = Field(min_length=1, max_length=255)
+    body_template: str = Field(min_length=1, max_length=1000)
 
 
 class TemplateCreate(BaseModel):
@@ -42,6 +58,15 @@ class TriggerType(Enum):
     SINGLE = "SINGLE"
     INTERVAL = "INTERVAL"
     EXACT = "EXACT"
+
+
+class Trigger(BaseModel):
+    id: int = Field(default=0)
+    user_id: str = Field(max_length=255)
+    trigger_type: TriggerType
+    start_time: int = Field(description="Время старта триггера в unix-time")
+    times: int = Field(ge=1, le=10000)
+    template_id: int
 
 
 class TriggerCreate(BaseModel):
@@ -68,6 +93,14 @@ class WeekDays(int, Enum):
     FRIDAY = 16
     SATURDAY = 32
     SUNDAY = 64
+
+
+class Restriction(BaseModel):
+    id: int = Field(default=0)
+    user_id: str = Field(max_length=255)
+    weekdays_bitmask: int = Field(default=0, ge=0, le=127)
+    time_start: int = Field(ge=0, le=1439)
+    time_end: int = Field(ge=0, le=1439)
 
 
 class RestrictionCreate(BaseModel):
