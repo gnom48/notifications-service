@@ -5,13 +5,14 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from sqlalchemy.engine.url import URL
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
-from app.db import NotificationRepository
+from app.db import NotificationRepository, RustorePushRepositopry
 from app.db import configure_db
 from app.rabbitmq.consumer import RabbitMQConsumer
 from app.sender import TgSender
 from app.sender.tg import start_tg_bot
-from app.services import NotificationsService
+from app.services import NotificationsService, RustorePushService
 from app.configs import TgConfig, RabbitMQConfig, ServerConfig, DbConfig
+from app.sender import translation
 
 
 class Container(DeclarativeContainer):
@@ -51,6 +52,11 @@ class Container(DeclarativeContainer):
         session_factory=__session_factory
     )
 
+    rustore_push_token_repository = providers.Factory(
+        RustorePushRepositopry,
+        session_factory=__session_factory
+    )
+
     rabbitmq_consumer = providers.Singleton(
         RabbitMQConsumer,
         config=rabbitmq_config
@@ -79,9 +85,16 @@ class Container(DeclarativeContainer):
         tg_bot=tg_bot
     )
 
+    translator = providers.Callable(translation)
+
     notification_service = providers.Factory(
         NotificationsService,
-        notifications_repo=notification_repository
+        repo=notification_repository
+    )
+
+    rustore_push_service = providers.Factory(
+        RustorePushService,
+        repo=rustore_push_token_repository
     )
 
     tg_sender = providers.Factory(

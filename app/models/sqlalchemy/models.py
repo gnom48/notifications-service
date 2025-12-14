@@ -1,5 +1,5 @@
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-from sqlalchemy import Column, Table, ForeignKey, Integer, BigInteger, String, Text, Float, Boolean, Enum as SqlEnum, DateTime, func
+from sqlalchemy import Column, Table, ForeignKey, Integer, BigInteger, String, Text, Float, Boolean, Enum as SqlEnum, DateTime, UniqueConstraint, func
 from enum import Enum
 import time
 
@@ -93,3 +93,20 @@ class RestrictionOrm(BaseModelOrm):
     weekdays_bitmask = Column(Integer, default=0)
     time_start: Mapped[int] = mapped_column(Integer)
     time_end: Mapped[int] = mapped_column(Integer)
+
+
+class RustorePushTokenOrm(BaseModelOrm):
+    """
+    Сервисный токен Rustore push
+    """
+    __tablename__ = "rustore_push_tokens"
+    __table_args__ = (
+        UniqueConstraint("user_id", "device_id"),
+        {"schema": "public"},
+    )
+
+    id: Mapped[int] = mapped_column(
+        Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[str] = mapped_column(Text, nullable=False)
+    device_id: Mapped[str] = mapped_column(Text, nullable=False)
+    token: Mapped[str] = mapped_column(Text, nullable=False)

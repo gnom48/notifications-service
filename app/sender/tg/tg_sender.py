@@ -26,6 +26,7 @@ class TgSender(BaseSender):
         self.tg_dispatcher = dp
         self.tg_bot = bot
 
+    # NOTE: пока поддерживает только отправку в общий чат
     async def send_single(self, msg: Msg, delay: int = 0) -> bool:
         try:
             await asyncio.sleep(delay)

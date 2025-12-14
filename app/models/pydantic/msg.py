@@ -5,6 +5,7 @@ from .models import NotificationType
 
 
 class Msg(BaseModel):
+    user_id: str
     sender: NotificationType
     title: str
     body: str

@@ -22,6 +22,7 @@ class BaseRepository(Generic[T], metaclass=ABCMeta):
     def __init__(self, session_factory: Factory):
         self.__session_factory = session_factory
         self.__session: AsyncSession = None
+        self.__logger = logging.getLogger(name="repo")
 
     # async with
 

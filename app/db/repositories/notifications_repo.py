@@ -20,7 +20,7 @@ class NotificationRepository(BaseRepository[NotificationOrm]):
             await self.__session.refresh(new_notification)
             return new_notification
         except SQLAlchemyError as e:
-            logging.error(f"Ошибка добавления уведомления: {e}")
+            self.__logger.error(f"Ошибка добавления уведомления: {e}")
             return None
 
     async def read_filterd(self, filter: NotificationsFilter) -> Optional[NotificationOrm]:

@@ -7,8 +7,8 @@ from app.db import NotificationRepository
 
 
 class NotificationsService:
-    def __init__(self, notifications_repo: NotificationRepository):
-        self.notifications_repo
+    def __init__(self, repo: NotificationRepository):
+        self.notifications_repo = repo
 
     async def GetNotifications(self, filter: NotificationsFilter) -> Restriction:
         try:

@@ -114,3 +114,16 @@ class RestrictionUpdate(BaseModel):
     weekdays_bitmask: Optional[int] = Field(None, ge=0, le=127)
     time_start: Optional[int] = Field(None, ge=0, le=1439)
     time_end: Optional[int] = Field(None, ge=0, le=1439)
+
+
+class RustorePushToken(BaseModel):
+    id: int
+    user_id: str
+    device_id: str
+    token: str
+
+
+class CreateUpdateRustorePushToken(BaseModel):
+    user_id: str
+    device_id: str
+    token: str
