@@ -12,8 +12,7 @@ router_rustore = APIRouter(prefix="/rustore_push",
 async def post_token(
     token: CreateUpdateRustorePushToken,
     rustore_push_service: RustorePushService = Depends(
-        # FIXME: мб так лучше, но если работать не будет то просто  rustore_push_service() сразу вызывать самому
-        di_container.rustore_push_service)
+        di_container.rustore_push_service())
 ):
     id = await rustore_push_service.rustore_push_token_repo.save_token(token)
     return ResultResponseBody(res=id)
