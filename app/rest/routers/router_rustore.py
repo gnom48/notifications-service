@@ -8,7 +8,7 @@ router_rustore = APIRouter(prefix="/rustore_push",
                            tags=["Restore push"])
 
 
-@router_rustore.post("/token", status_code=status.HTTP_201_OK, description="Send new ru.rustore.sdk:pushclient token")
+@router_rustore.post("/token", status_code=status.HTTP_201_CREATED, description="Send new ru.rustore.sdk:pushclient token")
 async def post_token(
     token: CreateUpdateRustorePushToken,
     rustore_push_service: RustorePushService = Depends(
