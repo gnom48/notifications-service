@@ -4,7 +4,7 @@ from app.services import RustorePushService
 from app.di import di_container
 
 
-router_rustore = APIRouter(prefix="rustore_push",
+router_rustore = APIRouter(prefix="/rustore_push",
                            tags=["Restore push"])
 
 
