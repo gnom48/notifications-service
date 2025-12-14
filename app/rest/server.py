@@ -4,7 +4,7 @@ import logging
 from typing import AsyncGenerator
 from fastapi import FastAPI
 
-from app.rest.routers import router_notification, router_healthcheck
+from app.rest.routers import router_notification, router_healthcheck, router_rustore
 from .middleware import auth_middleware, error_middleware
 from app.di import di_container
 
@@ -45,7 +45,8 @@ async def lifespan(
 
 asgi_application = FastAPI(
     lifespan=lifespan,
-    description="Notifications service"
+    description="Notifications service",
+    docs_url="/swagger"
 )
 
 asgi_application.middleware("http")(error_middleware)
@@ -53,3 +54,4 @@ asgi_application.middleware("http")(auth_middleware)
 
 asgi_application.include_router(router_healthcheck)
 asgi_application.include_router(router_notification)
+asgi_application.include_router(router_rustore)
