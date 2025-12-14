@@ -95,7 +95,8 @@ class Container(DeclarativeContainer):
 
     rustore_push_service = providers.Factory(
         RustorePushService,
-        repo=rustore_push_token_repository
+        repo=rustore_push_token_repository,
+        rustore_push_config=rustore_push_config
     )
 
     tg_sender = providers.Factory(
