@@ -8,10 +8,10 @@ from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from app.db import NotificationRepository, RustorePushRepositopry
 from app.db import configure_db
 from app.rabbitmq.consumer import RabbitMQConsumer
-from app.sender import TgSender
+from app.sender import TgSender, RustorePushSender
 from app.sender.tg import start_tg_bot
 from app.services import NotificationsService, RustorePushService
-from app.configs import TgConfig, RabbitMQConfig, ServerConfig, DbConfig
+from app.configs import TgConfig, RabbitMQConfig, ServerConfig, DbConfig, RustorePushConfig
 from app.sender import translation
 
 
@@ -22,6 +22,7 @@ class Container(DeclarativeContainer):
     rabbitmq_config = providers.Singleton(RabbitMQConfig)
     server_config = providers.Singleton(ServerConfig)
     db_config = providers.Singleton(DbConfig)
+    rustore_push_config = providers.Singleton(RustorePushConfig)
 
     __db_url = providers.Resource(
         URL.create,
@@ -100,4 +101,9 @@ class Container(DeclarativeContainer):
     tg_sender = providers.Factory(
         TgSender,
         config=tg_config
+    )
+
+    rustore_push_sender = providers.Factory(
+        RustorePushSender,
+        config=rustore_push_config
     )
