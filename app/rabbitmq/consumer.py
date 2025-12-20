@@ -6,7 +6,7 @@ import logging
 
 from app.configs import RabbitMQConfig
 from app.models.pydantic.msg import Msg, NotificationType
-from app.sender import create_sender, BaseSender
+from app.sender import BaseSender
 
 
 class RabbitMQConsumer:
@@ -15,6 +15,7 @@ class RabbitMQConsumer:
         self.__encoding_to = "utf-8"
         self.RABBITMQ_NACK_QUEUE_NAME = "nacks"
         self.config: RabbitMQConfig = config
+        self.senders_dict: Dict[NotificationType, BaseSender] = senders_dict
 
     async def connect(self) -> bool:
         try:
@@ -54,7 +55,7 @@ class RabbitMQConsumer:
                 msg_data: Msg = Msg.model_validate_json(
                     incoming_message.body.decode(self.__encoding_to))
 
-                msg_sender: BaseSender = create_sender(msg_data.sender)
+                msg_sender: BaseSender = self.senders_dict[msg_data.sender]
                 success = await msg_sender.send_single(msg=msg_data)
 
                 if not success:
