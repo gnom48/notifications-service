@@ -29,11 +29,18 @@ class RustorePushService:
         async with ClientSession() as session:
             try:
                 async with session.post(url, json=request_body.model_dump_json(), headers=headers) as resp:
-                    resp.raise_for_status()
+                    if resp.status >= 400:
+                        error_data = await resp.json()
+                        error_message = error_data.get("message")
+                        self.logger.error(
+                            f"Error sending push: {error_message}")
+                        return False
                     return True
             except ClientResponseError as err:
-                error_response = await err.response.json()
-                error_model = ErrorResponseBody(**error_response)
                 self.logger.error(
-                    f"Error sending push: {error_model.error.message}")
+                    f"Connection error while sending push: {err}", exc_info=True)
+                return False
+            except Exception as exc:
+                self.logger.exception(
+                    f"Unexpected error occurred during push sending: {exc}", exc_info=True)
                 return False
