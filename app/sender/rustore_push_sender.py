@@ -35,6 +35,7 @@ class RustorePushSender(BaseSender):
                         )
                     )
                     await self.service.send_message(request_body=req)
+            return True
         except Exception as e:
             self.logger.error(
                 f"Unable to send msg for user {msg.user_id} in Rustore Push: ", exc_info=e)
