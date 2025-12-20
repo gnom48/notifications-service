@@ -15,12 +15,12 @@ class NotificationRepository(BaseRepository[NotificationOrm]):
         """Добавляет новое уведомление в базу данных."""
         try:
             new_notification = NotificationOrm(**obj_in.model_dump())
-            self.__session.add(new_notification)
-            await self.__session.commit()
-            await self.__session.refresh(new_notification)
+            self._session.add(new_notification)
+            await self._session.commit()
+            await self._session.refresh(new_notification)
             return new_notification
         except SQLAlchemyError as e:
-            self.__logger.error(f"Ошибка добавления уведомления: {e}")
+            self._logger.error(f"Ошибка добавления уведомления: {e}")
             return None
 
     async def read_filterd(self, filter: NotificationsFilter) -> Optional[NotificationOrm]:
@@ -32,26 +32,26 @@ class NotificationRepository(BaseRepository[NotificationOrm]):
             smth = smth.where(NotificationOrm.when_planned >= filter.time_from)
         if filter.time_to is not None:
             smth = smth.where(NotificationOrm.when_planned <= filter.time_to)
-        result = await self.__session.execute(stmt)
+        result = await self._session.execute(stmt)
         return result.scalar_one_or_none()
 
     async def read_by_id(self, entity_id: int) -> Optional[NotificationOrm]:
         """Получает уведомление по идентификатору."""
         stmt = select(NotificationOrm).where(NotificationOrm.id == entity_id)
-        result = await self.__session.execute(stmt)
+        result = await self._session.execute(stmt)
         return result.scalar_one_or_none()
 
     async def update(self, entity_id: int, updated_obj: dict) -> Optional[NotificationOrm]:
         """Обновляет существующее уведомление."""
         stmt = update(NotificationOrm).where(
             NotificationOrm.id == entity_id).values(updated_obj)
-        await self.__session.execute(stmt)
-        await self.__session.commit()
+        await self._session.execute(stmt)
+        await self._session.commit()
         return await self.read_by_id(entity_id)
 
     async def delete(self, entity_id: int) -> bool:
         """Удаляет уведомление по идентификатору."""
         stmt = delete(NotificationOrm).where(NotificationOrm.id == entity_id)
-        await self.__session.execute(stmt)
-        await self.__session.commit()
+        await self._session.execute(stmt)
+        await self._session.commit()
         return True

@@ -7,8 +7,10 @@ import time
 class BaseModelOrm(DeclarativeBase):
     __abstract__ = True
     is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
-    who_create: Mapped[str] = mapped_column(String(32))
-    who_update: Mapped[str] = mapped_column(String(32))
+    who_create: Mapped[str | None] = mapped_column(
+        String(32), nullable=True, default=None)
+    who_update: Mapped[str | None] = mapped_column(
+        String(32), nullable=True, default=None)
     when_create: Mapped[int] = mapped_column(
         BigInteger, default=lambda: int(time.time()))
     when_update: Mapped[int] = mapped_column(BigInteger, default=lambda: int(
@@ -41,7 +43,7 @@ class NotificationOrm(BaseModelOrm):
     delivered: Mapped[bool] = mapped_column(Boolean, default=False)
 
 
-class TemplateOrm(BaseModelOrm):
+class NotificationTemplateOrm(BaseModelOrm):
     __tablename__ = "notification_templates"
     __table_args__ = {"schema": "public"}
 
@@ -75,7 +77,7 @@ class TriggerOrm(BaseModelOrm):
     start_time: Mapped[int] = mapped_column(BigInteger)
     times: Mapped[int] = mapped_column(Integer)
     template_id: Mapped[int] = mapped_column(ForeignKey(
-        "notification_templates.id", ondelete="SET NULL"))
+        "public.notification_templates.id", ondelete="SET NULL"))
 
 
 class RestrictionOrm(BaseModelOrm):

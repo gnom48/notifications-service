@@ -49,6 +49,8 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}                 # имя бд
       DROP_TABLES: ${DROP_TABLES}                 # надо ли удалять существующую схему
       CREATE_TABLES: ${CREATE_TABLES}             # надо ли создавать новую схему
+      RUSTORE_PUSH_PROJECT_ID: ${RUSTORE_PUSH_PROJECT_ID}
+      RUSTORE_PUSH_SERVICE_TOKEN: ${RUSTORE_PUSH_SERVICE_TOKEN}
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:${NOTIFICATIONS_PORT}/health_check"]

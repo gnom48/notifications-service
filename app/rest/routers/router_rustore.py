@@ -11,8 +11,8 @@ router_rustore = APIRouter(prefix="/rustore_push",
 @router_rustore.post("/token", status_code=status.HTTP_201_CREATED, description="Send new ru.rustore.sdk:pushclient token")
 async def post_token(
     token: CreateUpdateRustorePushToken,
-    rustore_push_service: RustorePushService = Depends(
-        di_container.rustore_push_service())
 ):
-    id = await rustore_push_service.rustore_push_token_repo.save_token(token)
-    return ResultResponseBody(res=id)
+    # FIXME: придумать как получать из di
+    async with di_container.rustore_push_token_repository() as repo:
+        id = await repo.save_token(token)
+        return ResultResponseBody(res=id)

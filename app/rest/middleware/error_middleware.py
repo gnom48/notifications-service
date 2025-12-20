@@ -1,5 +1,6 @@
 from fastapi import Request, status
 from fastapi.responses import JSONResponse
+import logging
 
 
 async def error_middleware(request: Request, call_next):
@@ -7,4 +8,6 @@ async def error_middleware(request: Request, call_next):
         resp = await call_next(request)
         return resp
     except Exception as e:
+        l = logging.getLogger('error_middleware')
+        l.error("Error has been handled: ", exc_info=True)
         return JSONResponse(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, content={"error": e.__str__()}, headers={'content-type': 'application/json'})

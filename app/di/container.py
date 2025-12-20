@@ -3,7 +3,7 @@ from dependency_injector import providers
 from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 from sqlalchemy.engine.url import URL
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
+from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
 
 from app.db import NotificationRepository, RustorePushRepositopry
 from app.db import configure_db
@@ -43,7 +43,7 @@ class Container(DeclarativeContainer):
     )
 
     __session_factory = providers.Factory(
-        async_sessionmaker,
+        async_sessionmaker[AsyncSession],
         bind=__async_engine,
         expire_on_commit=False
     )
@@ -65,7 +65,7 @@ class Container(DeclarativeContainer):
 
     db_configurer = providers.Callable(
         configure_db,
-        session_factory=__session_factory,
+        async_engine=__async_engine,
         need_create_tables=db_config.provided.CREATE_TABLES,
         need_drop_tables=db_config.provided.DROP_TABLES
     )

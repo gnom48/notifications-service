@@ -1,8 +1,10 @@
 from sqlalchemy import select
+from sqlalchemy.exc import SQLAlchemyError
+
 from app.models.sqlalchemy import RustorePushTokenOrm
+from app.models.exceptions import SqlException
 from app.models.pydantic import RustorePushToken, CreateUpdateRustorePushToken
 from .base_repo import BaseRepository
-from sqlalchemy.exc import SQLAlchemyError
 
 
 class RustorePushRepositopry(BaseRepository[RustorePushTokenOrm]):
@@ -19,13 +21,13 @@ class RustorePushRepositopry(BaseRepository[RustorePushTokenOrm]):
         """
         try:
             new_token = RustorePushTokenOrm(**obj_in.model_dump())
-            self.__session.add(new_token)
-            await self.__session.commit()
-            await self.__session.refresh(new_token)
+            self._session.add(new_token)
+            await self._session.commit()
+            await self._session.refresh(new_token)
             return new_token.id
         except SQLAlchemyError as e:
-            self.__logger.error(f"Ошибка добавления уведомления: {e}")
-            return None
+            self._logger.error(f"Ошибка добавления токена: {e}")
+            raise SqlException(msg=f"Unable to add token ({e._message()})")
 
     async def get_tokens_by_user_id(self, user_id: str) -> list[RustorePushTokenOrm]:
         """
@@ -36,7 +38,7 @@ class RustorePushRepositopry(BaseRepository[RustorePushTokenOrm]):
         :return: список токенов на устройствах пользователя
         :rtype: list[RustorePushTokenOrm]
         """
-        result = await self.__session.execute(
+        result = await self._session.execute(
             select(RustorePushTokenOrm).where(
                 RustorePushTokenOrm.user_id == user_id
             )

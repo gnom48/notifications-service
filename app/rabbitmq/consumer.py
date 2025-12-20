@@ -23,6 +23,8 @@ class RabbitMQConsumer:
                 login=self.config.RABBITMQ_USER,
                 password=self.config.RABBITMQ_PASSWORD
             )
+            aio_pika_logger = logging.getLogger('aio_pika')
+            aio_pika_logger.setLevel(logging.WARNING)
         except Exception as e:
             logging.error(f"Error connecting to RabbitMQ: {e}")
             logging.debug(self.config.__str__())
