@@ -97,7 +97,9 @@ class Container(DeclarativeContainer):
 
     tg_sender = providers.Factory(
         TgSender,
-        config=tg_config
+        config=tg_config,
+        bot=tg_bot,
+        dp=tg_dispatcher,
     )
 
     rustore_push_sender = providers.Factory(
