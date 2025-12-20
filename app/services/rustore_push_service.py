@@ -24,7 +24,7 @@ class RustorePushService:
             "Authorization": f"Bearer {self.config.RUSTORE_PUSH_SERVICE_TOKEN}",
             "Content-Type": "application/json"
         }
-        url = f"/{self.base_url}/projects/{self.config.RUSTORE_PUSH_PROJECT_ID}/messages:send"
+        url = f"{self.base_url}/projects/{self.config.RUSTORE_PUSH_PROJECT_ID}/messages:send"
 
         async with ClientSession() as session:
             try:
