@@ -1,7 +1,8 @@
 from aiohttp import ClientResponseError, ClientSession
+import logging
+
 from app.models.pydantic import SendRequest, ErrorResponseBody
 from app.db import RustorePushRepositopry
-import logging
 from app.configs import RustorePushConfig
 
 

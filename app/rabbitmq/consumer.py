@@ -1,15 +1,16 @@
+from typing import Dict
 from aio_pika import Message, connect_robust, Queue, IncomingMessage
 from aio_pika.abc import AbstractRobustConnection
 import asyncio
 import logging
 
 from app.configs import RabbitMQConfig
-from app.models.pydantic.msg import Msg
+from app.models.pydantic.msg import Msg, NotificationType
 from app.sender import create_sender, BaseSender
 
 
 class RabbitMQConsumer:
-    def __init__(self, config: RabbitMQConfig):
+    def __init__(self, config: RabbitMQConfig, senders_dict: Dict[NotificationType, BaseSender]):
         self.connection: AbstractRobustConnection = None
         self.__encoding_to = "utf-8"
         self.RABBITMQ_NACK_QUEUE_NAME = "nacks"
