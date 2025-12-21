@@ -53,11 +53,11 @@ asgi_application = FastAPI(
 )
 
 
-@asgi_application.get("/docs", include_in_schema=False)
+@asgi_application.get("/dodocs", include_in_schema=False)
 async def custom_swagger_ui_html():
     print("app.openapi_url is %s", asgi_application.openapi_url)
     return get_swagger_ui_html(
-        openapi_url=asgi_application.openapi_url,
+        openapi_url="/dodocs/openapi.json",
         title=asgi_application.title + " - Swagger UI",
         oauth2_redirect_url=asgi_application.swagger_ui_oauth2_redirect_url,
         swagger_js_url="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js",
@@ -73,15 +73,16 @@ async def swagger_ui_redirect():
 @asgi_application.get("/redoc", include_in_schema=False)
 async def redoc_html():
     return get_redoc_html(
-        openapi_url=asgi_application.openapi_url,
+        openapi_url="/dodocs/openapi.json",
         title=asgi_application.title + " - ReDoc",
         redoc_js_url="https://unpkg.com/redoc@next/bundles/redoc.standalone.js",
     )
 
 
-@asgi_application.get("/openapi.json", include_in_schema=False)
+@asgi_application.get("/dodocs/openapi.json", include_in_schema=False)
 async def openapi():
     return get_openapi(title=asgi_application.title, version=asgi_application.version, routes=asgi_application.routes)
+
 
 asgi_application.middleware("http")(error_middleware)
 asgi_application.middleware("http")(auth_middleware)
