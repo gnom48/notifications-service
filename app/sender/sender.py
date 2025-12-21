@@ -8,7 +8,7 @@ class BaseSender(ABC):
     Абстракция над сендером
     """
     @abstractmethod
-    async def send_single(self, msg: Msg, delay: int = 0) -> bool:
+    async def send_single(self, msg: Msg) -> bool:
         """
         Docstring for send_single
 

@@ -12,9 +12,9 @@ class RustorePushSender(BaseSender):
         self.logger = logging.getLogger(self.__class__.__name__)
         self.service = rustore_push_service
 
-    async def send_single(self, msg: Msg, delay: int = 0) -> bool:
+    async def send_single(self, msg: Msg) -> bool:
         try:
-            await asyncio.sleep(delay)
+
             async with self.service.rustore_push_token_repo as repo:
                 tokens = await repo.get_tokens_by_user_id(user_id=msg.user_id)
                 for token in tokens:

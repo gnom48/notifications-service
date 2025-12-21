@@ -91,7 +91,7 @@ class WeekDays(int, Enum):
     WEDNESDAY = 4
     THURSDAY = 8
     FRIDAY = 16
-    SATURDAY = 32
+    SATURDAY = 36
     SUNDAY = 64
 
 

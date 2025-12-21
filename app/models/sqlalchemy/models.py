@@ -8,9 +8,9 @@ class BaseModelOrm(DeclarativeBase):
     __abstract__ = True
     is_deleted: Mapped[bool] = mapped_column(Boolean, default=False)
     who_create: Mapped[str | None] = mapped_column(
-        String(32), nullable=True, default=None)
+        String(36), nullable=True, default=None)
     who_update: Mapped[str | None] = mapped_column(
-        String(32), nullable=True, default=None)
+        String(36), nullable=True, default=None)
     when_create: Mapped[int] = mapped_column(
         BigInteger, default=lambda: int(time.time()))
     when_update: Mapped[int] = mapped_column(BigInteger, default=lambda: int(
@@ -34,7 +34,7 @@ class NotificationOrm(BaseModelOrm):
 
     id: Mapped[int] = mapped_column(
         Integer, primary_key=True, autoincrement=True)
-    user_id: Mapped[str] = mapped_column(Text)
+    user_id: Mapped[str] = mapped_column(String(36))
     title: Mapped[str] = mapped_column(Text)
     body: Mapped[str] = mapped_column(Text)
     type_id: Mapped[NotificationTypeOrm] = mapped_column(
@@ -71,7 +71,7 @@ class TriggerOrm(BaseModelOrm):
 
     id: Mapped[int] = mapped_column(
         Integer, primary_key=True, autoincrement=True)
-    user_id: Mapped[str] = mapped_column(Text)
+    user_id: Mapped[str] = mapped_column(String(36))
     trigger_type: Mapped[TriggerTypeOrm] = mapped_column(
         SqlEnum(TriggerTypeOrm))
     start_time: Mapped[int] = mapped_column(BigInteger)
@@ -91,7 +91,7 @@ class RestrictionOrm(BaseModelOrm):
 
     id: Mapped[int] = mapped_column(
         Integer, primary_key=True, autoincrement=True)
-    user_id: Mapped[str] = mapped_column(Text)
+    user_id: Mapped[str] = mapped_column(String(36))
     weekdays_bitmask = Column(Integer, default=0)
     time_start: Mapped[int] = mapped_column(Integer)
     time_end: Mapped[int] = mapped_column(Integer)
@@ -109,6 +109,22 @@ class RustorePushTokenOrm(BaseModelOrm):
 
     id: Mapped[int] = mapped_column(
         Integer, primary_key=True, autoincrement=True)
-    user_id: Mapped[str] = mapped_column(Text, nullable=False)
-    device_id: Mapped[str] = mapped_column(Text, nullable=False)
-    token: Mapped[str] = mapped_column(Text, nullable=False)
+    user_id: Mapped[str] = mapped_column(String(36), nullable=False)
+    device_id: Mapped[str] = mapped_column(String(36), nullable=False)
+    token: Mapped[str] = mapped_column(String(36), nullable=False)
+
+
+class RustorePushTokenOrm(BaseModelOrm):
+    """
+    Id пользователей или чатов в TG
+    """
+    __tablename__ = "tg_chats"
+    __table_args__ = (
+        UniqueConstraint("user_id", "tg_chat"),
+        {"schema": "public"},
+    )
+
+    id: Mapped[int] = mapped_column(
+        Integer, primary_key=True, autoincrement=True)
+    user_id: Mapped[str] = mapped_column(String(36), nullable=False)
+    tg_chat: Mapped[str] = mapped_column(Text, nullable=False)

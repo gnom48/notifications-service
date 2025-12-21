@@ -1,3 +1,4 @@
+from typing import Any
 from pydantic import BaseModel
 from enum import Enum
 
@@ -9,3 +10,4 @@ class Msg(BaseModel):
     sender: NotificationType
     title: str
     body: str
+    extras: dict[str, Any] = {}

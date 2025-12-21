@@ -26,17 +26,16 @@ class TgSender(BaseSender):
         self.tg_dispatcher = dp
         self.tg_bot = bot
 
-    # NOTE: пока поддерживает только отправку в общий чат
-    async def send_single(self, msg: Msg, delay: int = 0) -> bool:
+    async def send_single(self, msg: Msg) -> bool:
         try:
-            await asyncio.sleep(delay)
             await self.tg_bot.send_message(
-                chat_id=self.__config.TG_DEFAULT_CHAT_ID,
+                chat_id=msg.extras.get(
+                    "tg_id") or self.__config.TG_DEFAULT_CHAT_ID,
                 text=TgSender.__build_msg(msg))
             return True
         except Exception as e:
             logging.error(
-                f"Unable to send msg for user _ in Telegram: ", exc_info=e)
+                f"Unable to send msg for user {msg.user_id} in Telegram: ", exc_info=True)
             return False
 
     @staticmethod
