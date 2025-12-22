@@ -114,7 +114,7 @@ class RustorePushTokenOrm(BaseModelOrm):
     token: Mapped[str] = mapped_column(String(36), nullable=False)
 
 
-class RustorePushTokenOrm(BaseModelOrm):
+class TgChatOrm(BaseModelOrm):
     """
     Id пользователей или чатов в TG
     """

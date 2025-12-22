@@ -9,5 +9,6 @@ if __name__ == "__main__":
     uvicorn.run(
         asgi_application,
         host="0.0.0.0",
-        port=server_config.SERVER_PORT
+        port=server_config.SERVER_PORT,
+        root_path="/notifications"
     )
