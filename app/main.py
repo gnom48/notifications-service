@@ -10,5 +10,5 @@ if __name__ == "__main__":
         asgi_application,
         host="0.0.0.0",
         port=server_config.SERVER_PORT,
-        root_path="/notifications"
+        root_path=server_config.ROOT_PATH
     )

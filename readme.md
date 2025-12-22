@@ -35,6 +35,7 @@ services:
       - "${NOTIFICATIONS_PORT}:${NOTIFICATIONS_PORT}"
     environment:
       SERVER_PORT: ${NOTIFICATIONS_PORT}          # порт на, на котором запускается FastApi
+      ROOT_PATH: ${ROOT_PATH}                     # префикс на Nginx перед приложением - например /notifications 
       TG_BOT_TOKEN: ${TG_BOT_TOKEN}               # токен ТГ бота
       TG_DEFAULT_CHAT_ID: ${TG_DEFAULT_CHAT_ID}   # id ТГ чата, куда по умолчанию приходят системные сообщения
       RABBITMQ_HOST: ${RABBITMQ_HOST}             # хост rabbitmq
